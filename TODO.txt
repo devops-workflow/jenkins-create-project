@@ -1,0 +1,16 @@
+
+Create random Jenkins build token -> JJB job definition & GitLab project variable
+Create random DB password (all env: QA, Staging, Prod) -> KMS
+    len=6
+    $(cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 32 | head -c ${{len}})
+Any other data for KMS ??
+
+GitLab
+  Setup services integrations
+    Enable and Config: Slack, Jira, Build Email, Pipeline Email
+    Disable: PivotalTracker
+  Setup notifications
+  Setup runners
+  Setup variables
+    Jenkins Token, 
+  Display GitLab version

@@ -1,0 +1,48 @@
+###
+### GitLab CI template for Spring (Java/Gradle) microservices
+###
+
+stages:
+  - build
+  - publish
+  - deploy
+
+before_script:
+  - chmod +x gradlew
+
+build:
+  stage: build
+  except:
+    - triggers
+  tags:
+    - java
+    - gradle
+  script:
+    - if [ -n "${CI_BUILD_TRIGGERED}" ]; then echo "Build is triggered, skipping other jobs"; exit 0; fi
+    - ./gradlew test build
+
+publish-docker-qa:
+  only:
+    - tags
+  stage: publish
+  tags:
+    - java
+    - gradle
+    - docker
+  script:
+    - if [ -n "${CI_BUILD_TRIGGERED}" ]; then echo "Build is triggered, skipping other jobs"; exit 0; fi
+    - ./gradlew build -x test
+
+    - docker login
+    - docker build
+    - docker push
+    - echo "Published X:${CI_BUILD_TAG}"
+
+jenkins_deployment:
+  stage: deploy
+  only:
+    - tags
+  tags:
+    - java
+  script:
+    - curl -ik "https://jenkins.org.com/job/
